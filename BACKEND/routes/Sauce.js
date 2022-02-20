@@ -9,18 +9,12 @@ const sauceCtrl = require("../controllers/Sauce");
 const auth = require("../middleware/auth");
 const multer = require("../middleware/multer-config");
 
-// je configure les routes
-// ajouter une sauce, obligation de s'auth + multer qui gère les images
+//configurations des routes
 router.post("/", auth, multer, sauceCtrl.createSauce);
-// afficher toutes les sauces dans la BDD
 router.get("/", auth, sauceCtrl.getAllSauce);
-// afficher une sauce par son id
 router.get("/:id", auth, sauceCtrl.getOneSauce);
-// modifier une sauce, seul l'user qui a ajouté la sauce peut le faire
 router.put("/:id", auth, multer, sauceCtrl.modifySauce);
-// suppr une sauce, seul l'user qui a ajouté la sauce peut le faire
 router.delete("/:id", auth, sauceCtrl.deleteSauce);
-// ajoute ou enlève un like à la sauce
-//router.post("/:id/like", auth, sauceCtrl.likeSauce);
+router.post("/:id/like", auth, sauceCtrl.likeSauce);
 
 module.exports = router;

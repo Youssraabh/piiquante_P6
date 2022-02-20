@@ -2,6 +2,25 @@ const Sauce = require('../models/Sauce');
 const fs = require('fs');
 
 
+// Création des sauces.
+exports.createSauce = (req, res, next) => {
+// body parsé en objet js utilisable
+const sauceObject = JSON.parse(req.body.sauce);
+const sauce = new Sauce({
+    // on récupère toutes les infos du body grâce à cette fonction ...spread
+    ...sauceObject,
+    //on récupère dynamiquement l'URL de l'image dans un AltGr + 7
+    imageUrl: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`,
+    likes: 0, // départ des likes à 0
+    dislikes: 0, // départ des dilikes à 0
+});
+sauce
+    .save() // sauvegarder la sauce dans la BDD
+    .then(() => res.status(201).json({message: "La sauce a bien été créée !"}))
+    .catch(error => res.status(400).json({error}));
+    console.log("voici la bonne sauce créée", sauce);
+};
+
 //Afficher toutes les sauces
 exports.getAllSauce = (req, res, next) => {
     Sauce.find()
@@ -17,21 +36,6 @@ exports.getOneSauce = (req, res, next) => {
     .then((sauce) => {res.status(200).json(sauce);})
     .catch((error) => {res.status(404).json({error: error,})});
 };
-
-// Création des sauces.
-exports.createSauce = (req,res,next) => {
-    const sauceObject = JSON.parse(req.body.sauce)
-    const sauce = new Sauce({
-        ...sauceObject,
-        imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
-        likes: 0,
-        dislikes: 0
-    });
-    sauce.save()
-    .then(() => res.status(201).json({ message: 'Sauce enregistré.'}))
-    .catch(error => res.status(400).json({ error }));
-};
-
 
 //suppression d'une sauce
 exports.deleteSauce = (req,res,next) => {
@@ -54,8 +58,8 @@ exports.modifySauce = (req, res, next) => {
     .then(() => res.status(200).json({message: 'Sauce modifiée'}))
     .catch(error => res.status(400).json({ error }));
 };
-/** 
-exports.likeOrNot = (req, res, next) => {
+
+exports.likeSauce = (req, res, next) => {
     if (req.body.like === 1) {
         Sauce.updateOne({ _id: req.params.id }, { $inc: { likes: req.body.like++ }, $push: { usersLiked: req.body.userId } })
             .then((sauce) => res.status(200).json({ message: 'Like ajouté !' }))
@@ -80,4 +84,3 @@ exports.likeOrNot = (req, res, next) => {
             .catch(error => res.status(400).json({ error }))
     }
 }
-*/

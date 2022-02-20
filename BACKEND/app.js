@@ -19,7 +19,7 @@ mongoose.connect(`mongodb+srv://youssra:YOussra@cluster0.jnptk.mongodb.net/myFir
   .then(() => console.log('Connexion à MongoDB réussie !'))
   .catch(() => console.log('Connexion à MongoDB échouée !'));
   
-// Pour créer une application Express, appelez simplement la méthode  express()
+
 const app = express();
 
 // Headers CORS
